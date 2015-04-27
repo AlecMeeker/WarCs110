@@ -12,7 +12,11 @@ public class StackReferenceBased
      */
     public boolean isEmpty()
     {
-        return top ==  null;
+        if (top ==  null){
+            return true;
+        }else {
+            return false;
+        }
     }
     /** Adds an item to the top of a stack.
      @ param newItem is the item to be added.

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Alec Meeker on 4/16/2015.
@@ -9,6 +10,7 @@ public class WarGame {
     private cardStack p1war,p2war;
     private ArrayList<Card> p1warcards,p2warcards;
     private int p1ds,p2ds,warstack; //deck size
+    public boolean warState;
 
 
     /***/
@@ -16,6 +18,12 @@ public class WarGame {
         player1=new cardQueue();
         player2=new cardQueue();
         dealnew(0,0);
+        warstack=0;
+        warState=false;
+        p1warcards=new ArrayList<Card>();
+        p2warcards=new ArrayList<Card>();
+        p1war=new cardStack();
+        p2war=new cardStack();
     }
 
     /***/
@@ -48,10 +56,24 @@ public class WarGame {
 
     /***/
     public void flip(){
-        p1up= player1.dequeue();
-        p2up= player2.dequeue();
+        try {
+            p1up = player1.dequeue();
+        }catch (Exception e){
+            System.out.print("Player 2 wins");
+            System.exit(0);
+        }
+        try {
+            p2up = player2.dequeue();
+        }catch (Exception e){
+            System.out.print("Player 1 wins");
+            System.exit(0);
+        }
         p1ds--;
         p2ds--;
+        warstack+=2;
+        if (p1up.equals(p2up)){
+            warState=true;
+        }
     }
 
     /***/
@@ -65,6 +87,7 @@ public class WarGame {
 
     }
 
+    /***/
     public void showWarPile(int i){
         switch (i){
             case 1:
@@ -82,15 +105,19 @@ public class WarGame {
 
     /***/
     public void resolve(){
-        if (p1up.greaterThan(p2up)){
-            winRound(player1);
-            addPoints(1);
-        }else if (p2up.greaterThan(p1up)){
-            winRound(player2);
-            addPoints(2);
-        }else if (p1up.equals(p2up)){
-            War();
-        }else{System.out.print("Something went wrong");}
+        if (warstack!=0) {
+            if (p1up.greaterThan(p2up)) {
+                winRound(player1);
+                addPoints(1);
+            } else if (p2up.greaterThan(p1up)) {
+                winRound(player2);
+                addPoints(2);
+            } else if (p1up.equals(p2up)) {
+                War();
+            } else {
+                System.out.print("Something went wrong");
+            }
+        }
     }
 
     /***/
@@ -110,16 +137,14 @@ public class WarGame {
     private void winRound(cardQueue player){
         player.enqueue(p1up);
         player.enqueue(p2up);
-        try {
-            while (p1war.peek() != null) {
-                player.enqueue(p1war.pop());
-            }
-            while (p2war.peek() != null) {
-                player.enqueue(p2war.pop());
-            }
-            p1warcards.clear();
-            p2warcards.clear();
-        }catch (NullPointerException e){}
+        while (p1war.peek() != null) {
+            player.enqueue(p1war.pop());
+        }
+        while (p2war.peek() != null) {
+            player.enqueue(p2war.pop());
+        }
+        p1warcards.clear();
+        p2warcards.clear();
 
     }
 
@@ -127,29 +152,97 @@ public class WarGame {
     private void War(){
         p1warcards.add(p1up);
         p1war.push(p1up);
+
         p2warcards.add(p2up);
         p2war.push(p2up);
-        for(int i=0;i<3;i++) {
-            p1war.push(player1.dequeue());
-            p1warcards.add(p1war.peek());
-            p1ds--;
-            p2war.push(player2.dequeue());
-            p2warcards.add(p2war.peek());
-            p2ds--;
-            warstack+=2;
-        }
+
+        p1war.push(player1.dequeue());
+        p1warcards.add(p1war.peek());
+        p1ds--;
+
+        p2war.push(player2.dequeue());
+        p2warcards.add(p2war.peek());
+        p2ds--;
+
         warstack+=2;
-        flip();
     }
 
     /***/
     private void addPoints(int ds){
-        int add=2+warstack;
         switch (ds){
-            case 1: p1ds+=add; break;
-            case 2: p2ds+=add; break;
+            case 1: p1ds+=warstack; break;
+            case 2: p2ds+=warstack; break;
             default:
                 System.out.println("There is an error......");
+        }
+        warstack=0;
+        warState=false;
+    }
+
+
+    /***/
+    public String picName(int pp){
+        String name="";
+        switch (pp){
+            case 1:
+                name+=p1up.getRankAsString().toLowerCase();
+                switch (p1up.getSuit()){
+                    case 1: name+="s.jpg";break;
+                    case 2: name+="c.jpg";break;
+                    case 3: name+="h.jpg";break;
+                    case 4: name+="d.jpg";break;
+                }
+                break;
+            case 2:
+                name+=p2up.getRankAsString().toLowerCase();
+                switch (p2up.getSuit()){
+                    case 1: name+="s.jpg";break;
+                    case 2: name+="c.jpg";break;
+                    case 3: name+="h.jpg";break;
+                    case 4: name+="d.jpg";break;
+                }
+                break;
+        }
+        return name;
+    }
+
+    /***/
+    public void shuffle(){
+        if(p1up!=null) {
+            resolve();
+        }
+        int randNum;
+        Random r = new Random();
+        Card temp;
+
+        Card[] shuff1=new Card[p1ds];
+        for (int p1st=0;p1st<p1ds;p1st++){
+            shuff1[p1st]=player1.dequeue();
+        }
+        for (int i = 0; i < p1ds; i++){
+            randNum = r.nextInt(p1ds);
+            temp = shuff1[i];
+            shuff1[i]=shuff1[randNum];
+            shuff1[randNum]=temp;
+        }
+        for(int ss1=0;ss1<p1ds;ss1++){
+            player1.enqueue(shuff1[ss1]);
+        }
+
+
+        Card[] shuff2=new Card[p2ds];
+        for (int p2st=0;p2st<p2ds;p2st++){
+            shuff2[p2st]=player2.dequeue();
+        }
+
+        for (int w = 0; w < p2ds; w++){
+            randNum = r.nextInt(p2ds);
+            temp = shuff2[w];
+            shuff2[w]=shuff2[randNum];
+            shuff2[randNum]=temp;
+        }
+        for(int ss2=0;ss2<p2ds;ss2++){
+            player2.enqueue(shuff2[ss2]);
         }
     }
 }

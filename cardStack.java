@@ -29,8 +29,20 @@ public class cardStack extends StackReferenceBased {
             return top.getItem();
         }
         else {
-            throw new StackException("StackException on " +
-                    "peek: stack empty");
+            return null;
+            //throw new StackException("StackException on " +"peek: stack empty");
+        }
+    }
+
+    /** Determines whether the stack is empty.
+     @return true if the stack is empty, otherwise returns false.
+     */
+    public boolean isEmpty()
+    {
+        if (top ==  null){
+            return true;
+        }else {
+            return false;
         }
     }
 }
