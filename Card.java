@@ -91,12 +91,18 @@ public class Card {
         }
     }
 
-    /***/
+    /**
+     a proper format for the string to be printed as
+     @return printable string
+     */
     public String toString(){
         return getRankAsString()+" of "+getSuitAsString();
     }
 
-    /***/
+    /**
+     only compares the rank, not the suit
+     @return if the cards are equal rank wise
+     */
     public boolean equals(Card r){
         boolean s=false;
         if (rank==r.getRank())
@@ -104,9 +110,16 @@ public class Card {
         return s;
     }
 
-    /***/
+    /**
+     compares this card and another
+     @return if the current card is greater than the chosen card
+     */
     public boolean greaterThan(Card c){
-        if(rank>c.rank){
+        if (rank==1 &&c.rank!=1){
+            return true;
+        }else if(c.rank==1 && rank!=1){
+            return false;
+        }else if(rank>c.rank){
             return true;
         }else {
             return false;

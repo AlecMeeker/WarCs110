@@ -1,5 +1,8 @@
 /**
- * Created by Alec Meeker on 4/16/2015.
+ * Alec Meeker
+ * CS 110
+ * initial tester for the game of war
+ * changed a lot to test specific aspects as they were added or problems found
  */
 public class WarGameTester {
     public static void main(String[]arg){

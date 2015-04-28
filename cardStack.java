@@ -1,15 +1,29 @@
 /**
- * Created by Alec Meeker on 4/16/2015.
+ * Alec Meeker
+ * CS 110 Final Project
+ * this is a Stack that only accepts cards
+ * this also only returns cards, this makes it possible to use a copy constructor
  */
 public class cardStack extends StackReferenceBased {
     private CardNode top;
 
+    /**
+     initializing the stack
+     */
     public cardStack(){top=null;}
 
+    /**
+     places a card on top of the stack
+     @param newItem a card
+     */
     public void push(Card newItem) throws StackException{
         top = new CardNode(newItem, top);
     }
 
+    /**
+     removes the top card of the stack
+     @return the top card
+     */
     public Card pop() throws StackException
     {
         if (!isEmpty()) {
@@ -23,6 +37,10 @@ public class cardStack extends StackReferenceBased {
         }
     }
 
+    /**
+     shows the top card without removing it from the stack
+     @return the top card
+     */
     public Card peek() throws StackException
     {
         if (!isEmpty()) {

@@ -2,18 +2,25 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by Alec Meeker on 4/16/2015.
+ * Alec Meeker
+ * Cs 110, Final Project
+ * War
+ * the card game program, no main method
+ * flips one for war
  */
 public class WarGame {
     private cardQueue player1,player2;
     private Card p1up,p2up;
     private cardStack p1war,p2war;
-    private ArrayList<Card> p1warcards,p2warcards;
+    public ArrayList<Card> p1warcards,p2warcards;
     private int p1ds,p2ds,warstack; //deck size
     public boolean warState;
 
 
-    /***/
+    /**
+     Constructor
+     this creates a game with two players and initializes all the values
+     */
     public WarGame(){
         player1=new cardQueue();
         player2=new cardQueue();
@@ -26,7 +33,11 @@ public class WarGame {
         p2war=new cardStack();
     }
 
-    /***/
+    /**
+     this method generates the deck and deals the cards out to the
+     @param y the size of player 1's deck
+     @param z the size of player 2's deck
+     */
     private void dealnew(int y, int z){
         if(y!=0){
             player1.dequeueAll();
@@ -54,7 +65,11 @@ public class WarGame {
         }
     }
 
-    /***/
+    /**
+     each player puts the top card face up
+     decrements the deck size
+     increases the amount of cards won
+     */
     public void flip(){
         try {
             p1up = player1.dequeue();
@@ -76,7 +91,10 @@ public class WarGame {
         }
     }
 
-    /***/
+    /**
+     printing method
+     produces what each player got when they flipped
+     */
     public void show(){
         System.out.println("player 1: " + p1up.toString());
         System.out.println("player 2: " + p2up.toString());
@@ -87,7 +105,10 @@ public class WarGame {
 
     }
 
-    /***/
+    /**
+     if there is a war, this shows the individual cards in the pile to be won in the war
+     @param i player's number
+     */
     public void showWarPile(int i){
         switch (i){
             case 1:
@@ -103,7 +124,9 @@ public class WarGame {
         }
     }
 
-    /***/
+    /**
+     if there are face up cards, this method determines where the cards go
+     */
     public void resolve(){
         if (warstack!=0) {
             if (p1up.greaterThan(p2up)) {
@@ -120,7 +143,11 @@ public class WarGame {
         }
     }
 
-    /***/
+    /**
+     allows the user to find the deck size of the specified player
+     @param i player's number
+     @return size of a deck
+     */
     public int getDeckSize(int i){
         switch (i){
             case 1:
@@ -133,7 +160,10 @@ public class WarGame {
         }
     }
 
-    /***/
+    /**
+     puts the cards in the specified players deck
+     @param player the actual player's card queue
+     */
     private void winRound(cardQueue player){
         player.enqueue(p1up);
         player.enqueue(p2up);
@@ -148,7 +178,9 @@ public class WarGame {
 
     }
 
-    /***/
+    /**
+     generates the piles of cards but does not flip the card that will determine who wins the piles
+     */
     private void War(){
         p1warcards.add(p1up);
         p1war.push(p1up);
@@ -165,9 +197,20 @@ public class WarGame {
         p2ds--;
 
         warstack+=2;
+
+        if(p1ds==0){
+            winRound(player2);
+            addPoints(2);
+        }else if(p2ds==0){
+            winRound(player1);
+            addPoints(1);
+        }
     }
 
-    /***/
+    /**
+     increases the winner's deck size by the amount they won
+     @param ds the player's number
+     */
     private void addPoints(int ds){
         switch (ds){
             case 1: p1ds+=warstack; break;
@@ -179,8 +222,11 @@ public class WarGame {
         warState=false;
     }
 
-
-    /***/
+    /**
+     names are based off of the names given from the zipped folder of card pictures
+     @param pp selected player's number
+     @return name of the picture
+     */
     public String picName(int pp){
         String name="";
         switch (pp){
@@ -206,7 +252,9 @@ public class WarGame {
         return name;
     }
 
-    /***/
+    /**
+     takes both players decks and shuffles them separately
+     */
     public void shuffle(){
         if(p1up!=null) {
             resolve();
@@ -245,4 +293,24 @@ public class WarGame {
             player2.enqueue(shuff2[ss2]);
         }
     }
+
+    /**
+     @return the string explicitly stating who won
+     */
+    public String theWinRound(){
+        String n="";
+        if (p1up!=null){
+            if (p1up.greaterThan(p2up)) {
+                n="Player one Wins";
+            } else if (p2up.greaterThan(p1up)) {
+                n="Player two Wins";
+            } else if (p1up.equals(p2up)) {
+                n="WAR!";
+            } else {
+                System.out.print("WrongWrongWrong");
+            }
+        }
+        return n;
+    }
+
 }

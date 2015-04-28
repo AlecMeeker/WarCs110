@@ -1,5 +1,8 @@
 /**
- * Created by Alec Meeker on 4/16/2015.
+ * Alec Meeker
+ * CS 110 Final Project
+ * this is a queue that only accepts cards
+ * this also only returns cards, this makes it possible to use a copy constructor
  */
 public class cardQueue extends QueueReferenceBased{
     private CardNode lastNode;
@@ -9,7 +12,10 @@ public class cardQueue extends QueueReferenceBased{
         lastNode = null;
     }
 
-    /***/
+    /**
+     card specific enqueue
+     @param c the card to be put into the queue
+     */
     public void enqueue(Card c){
         CardNode newNode = new CardNode(c);
 
@@ -27,6 +33,10 @@ public class cardQueue extends QueueReferenceBased{
         lastNode = newNode;  // new node is at back
     }
 
+    /**
+     produces the first card in the queue that was put there
+     @return the next card
+     */
     public Card dequeue()throws QueueException {
         if (!isEmpty()) {
             // queue is not empty; remove front
@@ -45,7 +55,10 @@ public class cardQueue extends QueueReferenceBased{
         }
     }
 
-    /***/
+    /**
+     returns whether the queue is empty or not
+     @return true or false depending on the last node
+     */
     public boolean isEmpty() {
         if(lastNode == null){
             return true;
